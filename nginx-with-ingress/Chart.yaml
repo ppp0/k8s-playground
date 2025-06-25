@@ -1,0 +1,13 @@
+apiVersion: v2
+name: nginx-with-ingress
+description: install nginx with ingress
+type: application
+version: 0.1.0
+appVersion: "1.16.0"
+dependencies:
+  - name: ingress
+    version: 0.1.0
+    repository: file://charts/ingress
+  - name: nginx
+    version: 0.1.0
+    repository: file://charts/nginx
