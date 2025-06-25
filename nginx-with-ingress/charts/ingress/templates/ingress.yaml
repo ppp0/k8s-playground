@@ -1,12 +1,4 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    app.kubernetes.io/instance: ingress-nginx
-    app.kubernetes.io/name: ingress-nginx
-  name: ingress-nginx
----
-apiVersion: v1
 automountServiceAccountToken: true
 kind: ServiceAccount
 metadata:
@@ -17,7 +9,7 @@ metadata:
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.12.3
   name: ingress-nginx
-  namespace: ingress-nginx
+  namespace: default
 ---
 apiVersion: v1
 automountServiceAccountToken: true
@@ -30,7 +22,7 @@ metadata:
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.12.3
   name: ingress-nginx-admission
-  namespace: ingress-nginx
+  namespace: default
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -42,7 +34,7 @@ metadata:
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.12.3
   name: ingress-nginx
-  namespace: ingress-nginx
+  namespace: default
 rules:
 - apiGroups:
   - ""
@@ -132,7 +124,7 @@ metadata:
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.12.3
   name: ingress-nginx-admission
-  namespace: ingress-nginx
+  namespace: default
 rules:
 - apiGroups:
   - ""
@@ -252,7 +244,7 @@ metadata:
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.12.3
   name: ingress-nginx
-  namespace: ingress-nginx
+  namespace: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -260,7 +252,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: ingress-nginx
-  namespace: ingress-nginx
+  namespace: default
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -272,7 +264,7 @@ metadata:
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.12.3
   name: ingress-nginx-admission
-  namespace: ingress-nginx
+  namespace: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -280,7 +272,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: ingress-nginx-admission
-  namespace: ingress-nginx
+  namespace: default
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -298,7 +290,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: ingress-nginx
-  namespace: ingress-nginx
+  namespace: default
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -317,7 +309,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: ingress-nginx-admission
-  namespace: ingress-nginx
+  namespace: default
 ---
 apiVersion: v1
 data: null
@@ -330,7 +322,7 @@ metadata:
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.12.3
   name: ingress-nginx-controller
-  namespace: ingress-nginx
+  namespace: default
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -342,7 +334,7 @@ metadata:
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.12.3
   name: ingress-nginx-controller
-  namespace: ingress-nginx
+  namespace: default
 spec:
   minReadySeconds: 0
   revisionHistoryLimit: 10
@@ -476,7 +468,7 @@ metadata:
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.12.3
   name: ingress-nginx-admission-create
-  namespace: ingress-nginx
+  namespace: default
 spec:
   template:
     metadata:
@@ -529,7 +521,7 @@ metadata:
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.12.3
   name: ingress-nginx-admission-patch
-  namespace: ingress-nginx
+  namespace: default
 spec:
   template:
     metadata:
@@ -603,7 +595,7 @@ webhooks:
   clientConfig:
     service:
       name: ingress-nginx-controller-admission
-      namespace: ingress-nginx
+      namespace: default
       path: /networking/v1/ingresses
       port: 443
   failurePolicy: Fail
@@ -620,3 +612,20 @@ webhooks:
     resources:
     - ingresses
   sideEffects: None
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+spec:
+  ingressClassName: nginx  # Matches your IngressClass
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx-with-ingress  # Must match your NGINX service name
+                port:
+                  number: 80
