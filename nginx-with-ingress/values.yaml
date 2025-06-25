@@ -1,7 +1,7 @@
 nginx:
   image:
-    repository: docker.bin.sbb.ch/nginx
+    repository: docker.bin.sbb.ch/nginnxx
   readinessProbe:
     httpGet:
-      path: /
+      path: /healthz
       port: http
