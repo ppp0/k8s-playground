@@ -1,2 +1,7 @@
-ingress:
-  namespace: ingress-nginx
+nginx:
+  image:
+    repository: docker.bin.sbb.ch/nginx
+  readinessProbe:
+    httpGet:
+      path: /
+      port: http
