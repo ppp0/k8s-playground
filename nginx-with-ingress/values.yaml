@@ -1,7 +1,2 @@
 nginx:
-  image:
-    repository: docker.bin.sbb.ch/nginnxx
-  readinessProbe:
-    httpGet:
-      path: /healthz
-      port: http
+  # Put your values overrides here for subchart nginx
