@@ -1,2 +1,2 @@
-nginx:
+nginx: {}
   # Put your values overrides here for subchart nginx
